@@ -4,10 +4,11 @@
 // але виконай рефакторинг з урахуванням того,
 // що бібліотека була встановлена через npm(синтаксис import /export).
 
-import { galleryItems } from './gallery-items.js';
 // Change code below this line
+import { galleryItems } from './gallery-items.js';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+
 const images = document.querySelector('.gallery');
 const html = galleryItems.reduce((accumulator, image) => {
   return (
@@ -19,6 +20,7 @@ const html = galleryItems.reduce((accumulator, image) => {
 </li>`
   );
 }, '');
+
 images.insertAdjacentHTML('beforeend', html);
 
 const lightbox = new SimpleLightbox('.gallery a', {
@@ -26,4 +28,3 @@ const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
-console.log(galleryItems);

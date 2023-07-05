@@ -8,32 +8,43 @@
 // а також виводь у консоль об'єкт з полями email, message та їхніми поточними значеннями.
 // Зроби так, щоб сховище оновлювалось не частіше, ніж раз на 500 мілісекунд.
 // Для цього додай до проекту і використовуй бібліотеку lodash.throttle
-const feedbackForm = document.querySelector('.feedback-form');
-const emailInput = document.querySelector('.feedback-form input');
-const messageInput = document.querySelector('.feedback-form textarea');
 import throttle from 'lodash.throttle';
-if (localStorage.getItem('feedback-form-state')) {
-  const savedData = JSON.parse(localStorage.getItem('feedback-form-state'));
-  console.log(savedData);
-  emailInput.value = savedData.email;
-  messageInput.value = savedData.message;
-}
+
+const feedbackForm = document.querySelector('.feedback-form');
+const LOCAL_STORAGE_KEY = 'feedback-form-state';
+
+let formData = {};
+
+window.addEventListener('load', onLoad);
 feedbackForm.addEventListener('input', throttle(inputSave, 500));
 feedbackForm.addEventListener('submit', onSubmit);
-function inputSave(event) {
-  event.preventDefault();
+
+function onLoad() {
   try {
-    let formData = { email: emailInput.value, message: messageInput.value };
-    console.log(formData);
-    localStorage.setItem('feedback-form-state', JSON.stringify(formData));
+    const data = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (!data) return;
+    formData = JSON.parse(data);
+    Object.entries(formData).forEach(([key, val]) => {
+      feedbackForm.elements[key].value = val;
+    });
   } catch (error) {
-    return;
+    console.log(error.message);
   }
 }
+
+function inputSave(event) {
+  try {
+    event.preventDefault();
+    formData[event.target.name] = event.target.value.trim();
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formData));
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 function onSubmit(event) {
   event.preventDefault();
-  let formData = { email: emailInput.value, message: messageInput.value };
   console.log(formData);
-  localStorage.removeItem('feedback-form-state');
+  localStorage.removeItem(LOCAL_STORAGE_KEY);
   event.currentTarget.reset();
 }

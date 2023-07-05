@@ -9,13 +9,14 @@
 // Додай до проекту бібліотеку lodash.throttle
 // і зроби так, щоб час відтворення оновлювався у сховищі не частіше, ніж раз на секунду.
 import Player from '@vimeo/player';
+import throttle from 'lodash.throttle';
+
 const iframe = document.querySelector('iframe');
 const player = new Player(iframe);
-import throttle from 'lodash.throttle';
+
 player.setCurrentTime(localStorage.getItem('videoplayer-current-time') || 0);
 
 player.on('timeupdate', throttle(timeSave, 1000));
 function timeSave(currentTime) {
-  console.log(currentTime.seconds);
   localStorage.setItem('videoplayer-current-time', currentTime.seconds);
 }
